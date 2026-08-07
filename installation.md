@@ -28,5 +28,23 @@ deb http://deb.debian.org/debian bookworm-updates main contrib non-free non-free
 
 ### 2. Installation des dépendances
 
+Après avoir installé Debian (VM ou serveur physique), commencez par installer les paquets requis : 
+```
+sudo apt install apache2 php mariadb-server
+```
+Ensuite ajoutez les extensions PHP nécessaires : 
+```
+sudo apt-get install php8.2-fpm php-xml php-common php-json php-mysql php-mbstring php-curl php-gd php-intl php-zip php-bz2 php-imap php-apcu php-ldap
+```
+
+### 3. Configuration de la timezone 
+
+En fonction bien sûr de votre fuseau horaire (**ici, c'est paris**),
+```
+timedatectl set-timezone "Europe/Paris"
+
+mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -p -u root mysql
+```
+
 
   
