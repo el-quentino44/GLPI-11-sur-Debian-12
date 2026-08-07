@@ -46,5 +46,22 @@ timedatectl set-timezone "Europe/Paris"
 mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -p -u root mysql
 ```
 
+### 4.Création de la base de données
+Excécutez : 
+```
+sudo mysql_secure_installation
+```
+
+Répondez comme suit :
+
+- Switch to unix_socket → N
+- Change the root password → Y (choisissez un mot de passe fort)
+- Remove anonymous users → Y
+- Disallow root login remotely → Y
+- Remove test database → Y
+- Reload privilege tables → Y
+
+Ensuite, connectez-vous : 
+
 
   
