@@ -17,7 +17,7 @@ Ouvrez votre terminal et lancez ces commandes pour mettre à jour le système:
 ```
 nano /etc/apt/sources.list
 ```
-- Mettre **#** devant le BOOKWARM et mettre en dessous
+- Mettez **#** devant le BOOKWARM et mettre en dessous
 ```
 deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware
 
@@ -26,7 +26,7 @@ deb http://security.debian.org/debian-security bookworm-security main contrib no
 deb http://deb.debian.org/debian bookworm-updates main contrib non-free non-free-firmware
 ```
 
-- Enregistrer les modifications et mettre à jour le système
+- Enregistrez les modifications et mettre à jour le système
 ```
 sudo apt update && sudo apt upgrade -y
 ```
@@ -109,7 +109,7 @@ sudo chown www-data /var/log/glpi
 ```
 ### 3. Configurer GLPI
 
-- Créer le fichier ***downstream.php*** et y coller le contenu ci-après. Ce fichier va servir de pont de redirection pour charger les fichiers de configuration de GLPI.
+- Créez le fichier ***downstream.php*** et y coller le contenu ci-après. Ce fichier va servir de pont de redirection pour charger les fichiers de configuration de GLPI.
 ```
 <?php
 define('GLPI_CONFIG_DIR', '/etc/glpi/');
@@ -118,13 +118,51 @@ if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
 }
 ```
 
-- Créer ensuite ***local_define.php*** et y coller le contenu ci-après. Ce fichier va servir à redéfinir les dossiers d'enregistrement, de logs, de configuration, de sécurité...
+- Créez ensuite ***local_define.php*** et y coller le contenu ci-après. Ce fichier va servir à redéfinir les dossiers d'enregistrement, de logs, de configuration, de sécurité...
 ```
 <?php
 define('GLPI_VAR_DIR', '/var/lib/glpi/files');
 define('GLPI_LOG_DIR', '/var/log/glpi');
 ```
 
-### 4.
+### 4. Configuration d'Apache2
 
-  
+- Désactivez le site par défaut :
+```
+sudo a2dissite 000-default.conf
+```
+- Créez un ***VirtualHost*** qui va abriter la configuration de notre serveur GLPI
+```
+sudo nano /etc/apache2/sites-available/votre-domaine.conf
+```
+- Collez y le contenu suivant et ajuster au choix
+```
+<VirtualHost *:80>
+    ServerName votre-nom-de.domaine
+    DocumentRoot /var/www/glpi/public
+
+    <Directory /var/www/glpi/public>
+        Require all granted
+        AllowOverride All
+        RewriteEngine On
+        Options FollowSymlinks
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ index.php [QSA,L]
+    </Directory>
+
+    <FilesMatch \.phpgt;
+        SetHandler "proxy:unix:/run/php/php8.2-fpm.sock|fcgi://localhost/"
+    </FilesMatch>
+</VirtualHost>
+```
+
+- Activez les modules : 
+```
+sudo a2enmod rewrite
+sudo a2ensite votre-domaine.conf
+sudo systemctl restart apache2
+```
+
+### 5. Utiliser PHP-FPM
+
+
