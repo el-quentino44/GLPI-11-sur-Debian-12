@@ -11,7 +11,7 @@ L'installation s'appuie sur la stack **LAMP**, garante d'une infrastructure fiab
 - Un langage de traitement **PHP**
 
 ## Préparation de l'environnement
-### 1. Mise à jour du système (Si c'est pas déjà fait)
+### 1. Mise à jour du système (si c'est pas déjà fait)
 Ouvrez votre terminal et lancez ces commandes pour mettre à jour le système:
 - Ouvrir le fichier ***sources.list***  
 ```
