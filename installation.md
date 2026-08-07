@@ -89,7 +89,7 @@ wget https://github.com/glpi-project/glpi/releases/download/11.0.8/glpi-11.0.8.t
 
 sudo tar -xzvf glpi-11.0.8.tgz -C /var/www/
 ```
-- Puis donnez les droits :
+- Puis donnez les droits à ***www-data*** qui est l'utilisateur système par défaut du serveur web Apache2:
 ```
 sudo chown www-data /var/www/glpi -R
 ```
@@ -165,4 +165,29 @@ sudo systemctl restart apache2
 
 ### 5. Utiliser PHP-FPM
 
+- Activez ***PHP-FPM***, une version optimisée de PHP qui permet d'éxecuter du code PHP en arrière plan, séparément du serveur web
+```
+sudo a2enmod proxy_fcgi setenvif
+sudo a2enconf php8.2-fpm
+sudo systemctl reload apache2
+```
 
+- Editez le fichier ***php.ini*** et modifier le paramètre suivant : 
+```
+session.cookie.httponly = on
+```
+
+- Puis redémarrez ces deux services :
+```
+sudo systemctl restart php8.2-fpm.service
+sudo systemctl restart apache2
+```
+
+## Accès à GLPI
+
+Ouvrez un navigateur et rendez-vous sur 127.0.1.1 si installé en local, ou sur votre domaine.
+Choisissez **Installer**, puis configurez l’accès à la base :
+
+- Serveur SQL : localhost
+- Utilisateur SQL : glpi_admin
+- Mot de passe : @SuperP4ssword
