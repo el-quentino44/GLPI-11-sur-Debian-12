@@ -109,7 +109,12 @@ sudo chown www-data /var/log/glpi
 ```
 ### 3. Configurer GLPI
 
-- Créez le fichier ***downstream.php*** et y coller le contenu ci-après. Ce fichier va servir de pont de redirection pour charger les fichiers de configuration de GLPI.
+- Créez le fichier ***downstream.php*** :
+```
+sudo nano /var/www/glpi/inc/downstream.php
+```
+
+- Y collez le contenu ci-après. Ce fichier va servir de pont de redirection pour charger les fichiers de configuration de GLPI.
 ```
 <?php
 define('GLPI_CONFIG_DIR', '/etc/glpi/');
@@ -118,7 +123,12 @@ if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
 }
 ```
 
-- Créez ensuite ***local_define.php*** et y coller le contenu ci-après. Ce fichier va servir à redéfinir les dossiers d'enregistrement, de logs, de configuration, de sécurité...
+- Créez ensuite ***local_define.php*** :
+```
+sudo nano /etc/glpi/local_define.php
+```
+  
+- Y collez le contenu ci-après. Ce fichier va servir à redéfinir les dossiers d'enregistrement, de logs, de configuration, de sécurité...
 ```
 <?php
 define('GLPI_VAR_DIR', '/var/lib/glpi/files');
@@ -150,7 +160,7 @@ sudo nano /etc/apache2/sites-available/votre-domaine.conf
         RewriteRule ^(.*)$ index.php [QSA,L]
     </Directory>
 
-    <FilesMatch \.phpgt;
+    <FilesMatch \.php$>
         SetHandler "proxy:unix:/run/php/php8.2-fpm.sock|fcgi://localhost/"
     </FilesMatch>
 </VirtualHost>
