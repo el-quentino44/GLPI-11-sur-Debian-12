@@ -188,6 +188,6 @@ sudo systemctl restart apache2
 Ouvrez un navigateur et rendez-vous sur 127.0.1.1 si installé en local, ou sur votre domaine.
 Choisissez **Installer**, puis configurez l’accès à la base :
 
-- Serveur SQL : localhost
-- Utilisateur SQL : glpi_admin
-- Mot de passe : @SuperP4ssword
+- Serveur SQL : **localhost**
+- Utilisateur SQL : **glpi_admin**
+- Mot de passe : **@SuperP4ssword**
