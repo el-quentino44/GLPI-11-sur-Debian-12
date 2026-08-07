@@ -107,3 +107,24 @@ sudo mv /var/www/glpi/files /var/lib/glpi
 sudo mkdir /var/log/glpi
 sudo chown www-data /var/log/glpi
 ```
+### 3. Configurer GLPI
+
+- Créer le fichier ***downstream.php*** et y coller le contenu ci-après. Ce fichier va servir de pont de redirection pour charger les fichiers de configuration de GLPI.
+```
+<?php
+define('GLPI_CONFIG_DIR', '/etc/glpi/');
+if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
+    require_once GLPI_CONFIG_DIR . '/local_define.php';
+}
+```
+
+- Créer ensuite ***local_define.php*** et y coller le contenu ci-après. Ce fichier va servir à redéfinir les dossiers d'enregistrement, de logs, de configuration, de sécurité...
+```
+<?php
+define('GLPI_VAR_DIR', '/var/lib/glpi/files');
+define('GLPI_LOG_DIR', '/var/log/glpi');
+```
+
+### 4.
+
+  
