@@ -1,4 +1,4 @@
-# Mise à niveau de GLPI 10 vers GLPI 11 sur Debian 12 Bookworm
+# Plan de migration de GLPI 10 vers GLPI 11 sur Debian 12 Bookworm
 
 ## Introduction
 ***GLPI*** est la solution de référence pour la gestion de parc informatique et de helpdesk. Dans ce TP, nous allons voir comment procéder à la mise à niveau complète d’une instance GLPI 10 vers la version 11.
