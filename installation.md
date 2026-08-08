@@ -66,11 +66,11 @@ Répondez comme suit :
 - Remove test database → Y
 - Reload privilege tables → Y
 
-Ensuite, connectez-vous : 
+Ensuite, connectez-vous à mysql : 
 ```
 sudo mysql -u root -p
 ```
-Puis créez la base et l'utilisateur :
+Puis créez la base de données et l'utilisateur :
 ```
 CREATE DATABASE nom_de_la_bd;
 
