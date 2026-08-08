@@ -10,6 +10,8 @@ L'installation s'appuie sur la stack **LAMP**, garante d'une infrastructure fiab
 - Une base de données **MariaDB**
 - Un langage de traitement **PHP**
 
+Bien sûr, il faut prévoir une connexion à Internet pour le téléchargement de certains paquets.
+
 ## Préparation de l'environnement
 ### 1. Mise à jour du système (si c'est pas déjà fait)
 Ouvrez votre terminal et lancez ces commandes pour mettre à jour le système:
