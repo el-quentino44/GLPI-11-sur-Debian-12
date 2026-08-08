@@ -24,13 +24,33 @@ tar -czf /backup/glpi_files_pre_migration.tar.gz /var/www/glpi /etc/glpi /var/li
 Dans GLPI 10, allez dans ***Configuration*** > ***Plugins*** et désactivez tous ceux sans version pour la 11. Supprimez les répertoires des incompatibles. Cette étape n'est pas optionnelle : c'est la cause n°1 d'échec à la commande de mise à jour.
 
 ### 3. Mettre à jour les fichiers de GLPI
-- Téléchargez toujours la dernière version stable de la ligne 11.x, pas forcément la 11.0.0.
+- Téléchargez toujours la dernière version stable de la ligne 11.x, pas forcément la 11.0.0 :
 ```
 cd /tmp
 wget https://github.com/glpi-project/glpi/releases/download/11.0.0/glpi-11.0.0.tgz
 tar -xzf glpi-11.0.0.tgz
 ```
-- Remplacez les fichiers en préservant configuration, données et plugins
+- Remplacez les fichiers en préservant les configuration, données et plugins :
 ```
 rsync -av --delete /tmp/glpi/ /var/www/glpi/ --exclude plugins/ --exclude marketplace/
 chown -R www-data:www-data /var/www/glpi
+```
+
+### 4. Lancer la migration de la base 
+```
+php /var/www/glpi/bin/console db:update --no-interaction
+```
+Cette commande applique toutes les migrations de schéma. Suivez toute la sortie car toute erreur doit être résolue avant de continuer et jamais ignorée.
+
+### 5. Vider le cache et les sessions
+```
+php /var/www/glpi/bin/console cache:clear
+rm -rf /var/lib/glpi/_sessions/*
+```
+
+### 6. Vérification post-migration
+- La connexion fonctionne et la version sous Configuration > Général affiche 11.x.
+- Tickets, actifs et utilisateurs sont présents avec les totaux attendus.
+- L'ouverture d'un nouveau ticket fonctionne de bout en bout.
+- Journaux sans erreurs récurrentes après quelques minutes d'usage.
+- Réactivez et mettez à jour les plugins compatibles un par un, en testant entre chaque.
