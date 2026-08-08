@@ -22,3 +22,15 @@ tar -czf /backup/glpi_files_pre_migration.tar.gz /var/www/glpi /etc/glpi /var/li
 
 ### 2. Désactiver les plugins incompatibles 
 Dans GLPI 10, allez dans ***Configuration*** > ***Plugins*** et désactivez tous ceux sans version pour la 11. Supprimez les répertoires des incompatibles. Cette étape n'est pas optionnelle : c'est la cause n°1 d'échec à la commande de mise à jour.
+
+### 3. Mettre à jour les fichiers de GLPI
+- Télé
+```
+cd /tmp
+wget https://github.com/glpi-project/glpi/releases/download/11.0.0/glpi-11.0.0.tgz
+tar -xzf glpi-11.0.0.tgz
+```
+- Remplacez les fichiers en préservant configuration, données et plugins
+```
+rsync -av --delete /tmp/glpi/ /var/www/glpi/ --exclude plugins/ --exclude marketplace/
+chown -R www-data:www-data /var/www/glpi
