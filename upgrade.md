@@ -43,6 +43,7 @@ php /var/www/glpi/bin/console db:update --no-interaction
 Cette commande applique toutes les migrations de schéma. Suivez toute la sortie car toute erreur doit être résolue avant de continuer et jamais ignorée.
 
 ### 5. Vider le cache et les sessions
+Vider le cache de GLPI permet d'***éviter les erreurs d'affichage et de bugs, et de forcer la prise en compte du nouveau code*** : 
 ```
 php /var/www/glpi/bin/console cache:clear
 rm -rf /var/lib/glpi/_sessions/*
