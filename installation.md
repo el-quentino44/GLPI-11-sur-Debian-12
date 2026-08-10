@@ -205,7 +205,7 @@ Choisissez **Installer**, puis configurez l’accès à la base :
 - Serveur SQL : **localhost**
 - Utilisateur SQL : **glpi_admin**
 - Mot de passe : **@SuperP4ssword**
+  
 
 N'oubliez pas à la fin d'attribuer des mots de passe à vos utilisateurs par défaut ou les supprimer. Aussi s'assurer que les dates sont correctes car essentiels pour un meilleur traitement des tickets.
 
-# Merci !
