@@ -41,7 +41,7 @@ sudo apt install apache2 php mariadb-server
 ```
 - Ensuite ajoutez les extensions PHP nécessaires : 
 ```
-sudo apt-get install php8.2-fpm php-xml php-common php-json php-mysql php-mbstring php-curl php-gd php-intl php-zip php-bz2 php-imap php-apcu php-ldap
+sudo apt-get install php8.2-fpm php-xml php-common php-json php-mysql php-mbstring php-curl php-gd php-intl php-zip php-bz2 php-imap php-apcu php-ldap php-bcmath
 ```
 
 ### 3. Configuration de la timezone 
@@ -150,6 +150,7 @@ sudo nano /etc/apache2/sites-available/votre-domaine.conf
 - Collez y le contenu suivant et ajuster au choix
 ```
 <VirtualHost *:80>
+
     ServerName votre-nom-de.domaine
     DocumentRoot /var/www/glpi/public
 
@@ -165,6 +166,7 @@ sudo nano /etc/apache2/sites-available/votre-domaine.conf
     <FilesMatch \.php$>
         SetHandler "proxy:unix:/run/php/php8.2-fpm.sock|fcgi://localhost/"
     </FilesMatch>
+
 </VirtualHost>
 ```
 
@@ -203,3 +205,7 @@ Choisissez **Installer**, puis configurez l’accès à la base :
 - Serveur SQL : **localhost**
 - Utilisateur SQL : **glpi_admin**
 - Mot de passe : **@SuperP4ssword**
+
+N'oubliez pas à la fin d'attribuer des mots de passe à vos utilisateurs par défaut ou les supprimer. Aussi s'assurer que les dates sont correctes car essentiels pour un meilleur traitement des tickets.
+
+# Merci !
