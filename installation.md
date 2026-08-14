@@ -233,7 +233,7 @@ sudo systemctl restart apache2
 </VirtualHost>
 ```
 
-### 5. Utiliser PHP-FPM
+### 5. Utilisation de PHP-FPM
 
 - Activez ***PHP-FPM***, une version optimisée de PHP qui permet d'éxecuter du code PHP en arrière plan, séparément du serveur web
 ```
@@ -241,6 +241,8 @@ sudo a2enmod proxy_fcgi setenvif
 sudo a2enconf php8.2-fpm
 sudo systemctl reload apache2
 ```
+
+### 6. Configuration du fichier php.ini
 
 - Ouvrir le fichier ***php.ini***
 ```
@@ -251,7 +253,9 @@ sudo nano /etc/php/8.2/apache2/php.ini
 
     - ``` session.cookie_httponly = on ``` pour indiquer au navigateur que le cookie de session ne doit être accessible que par **HTTP/HTTPS**,
 
-    - ``` session.cookie_secure = on ``` à faire lorsqu'une première connexion au GLPI en **HTTPS** a déjà été faite,
+    - ``` session.cookie_secure = on ``` : à faire lorsqu'une première connexion au GLPI en **HTTPS** a déjà été faite et pour définir le protocole **HTTPS** comme l'unique moyen d'accès,
+
+    - ``` session.cookie_samesite = Lax ```: pour bloquer le piratage venant de sites web malveillants
 
     - ``` max_execution_time = 60 ``` : pour indiquer le temps d'éxecution maximal d'un script PHP est **60s**
 
@@ -263,7 +267,24 @@ sudo nano /etc/php/8.2/apache2/php.ini
 
     - ``` post_max_size = 20M ``` : pour définir la taille maximale des données qu'un utilisateur peut envoyer en une seule fois
 
+### 7. Gestion des permissions 
 
+Par défaut, l'utilisateur ***root*** est le propriétaire de tous les dossiers et fichiers de GLPI, ce qui laisse l'utilisateur web ***www-data*** sans droit d'écriture. On va donc changer de propriétaire et attribuer aux dossiers et aux fichiers systèmes des droits spécifiques. l'utilisateur ***root*** ne doit être propriétaire que du code source de GLPI.
+```
+chown root:root /var/www/html/glpi/ -R
+chown www-data:www-data /etc/glpi -R
+chown www-data:www-data /var/lib/glpi -R
+chown www-data:www-data /var/log/glpi -R
+chown www-data:www-data /var/www/html/glpi/marketplace -Rf
+find /var/www/html/glpi/ -type f -exec chmod 0644 {} \;
+find /var/www/html/glpi/ -type d -exec chmod 0755 {} \;
+find /etc/glpi -type f -exec chmod 0644 {} \;
+find /etc/glpi -type d -exec chmod 0755 {} \;
+find /var/lib/glpi -type f -exec chmod 0644 {} \;
+find /var/lib/glpi -type d -exec chmod 0755 {} \;
+find /var/log/glpi -type f -exec chmod 0644 {} \;
+find /var/log/glpi -type d -exec chmod 0755 {} \;
+```
 
 - Puis redémarrez ces deux services :
 ```
