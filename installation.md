@@ -75,11 +75,10 @@ sudo mysql -u root -p
 Puis créez la base de données et l'utilisateur :
 ```
 CREATE DATABASE nom_de_la_bd;
-
-GRANT ALL PRIVILEGES ON nom_de_la_bd.* TO glpi_admin@localhost IDENTIFIED BY "@SuperP4ssword";
-
+CREATE USER 'glpi_admin'@'localhost' IDENTIFIED BY '@SuperP4ssword';
+GRANT ALL PRIVILEGES ON nom_de_la_bd.* TO 'glpi_admin'@'localhost';
+GRANT SELECT ON `mysql`.`time_zone_name` TO 'glpi_admin'@'localhost';
 FLUSH PRIVILEGES;
-
 EXIT;
 ```
 
@@ -149,6 +148,8 @@ sudo nano /etc/apache2/sites-available/votre-domaine.conf
 ```
 - Collez y le contenu suivant et ajuster au choix
 ```
+# Configuration HTTP
+
 <VirtualHost *:80>
 
     ServerName votre-nom-de.domaine
@@ -167,6 +168,8 @@ sudo nano /etc/apache2/sites-available/votre-domaine.conf
         SetHandler "proxy:unix:/run/php/php8.2-fpm.sock|fcgi://localhost/"
     </FilesMatch>
 
+     ErrorLog ${APACHE_LOG_DIR}/glpi-error.log
+     CustomLog ${APACHE_LOG_DIR}/glpi-access.log combined
 </VirtualHost>
 ```
 
@@ -175,6 +178,45 @@ sudo nano /etc/apache2/sites-available/votre-domaine.conf
 sudo a2enmod rewrite
 sudo a2ensite votre-domaine.conf
 sudo systemctl restart apache2
+```
+
+**N.B** : S'il existe une autorité de certification SSL, on peut générer une clée privée + une demande (CSR) pour obtenir le certificat signé. Alors on pourra paramétrer le site pour utiliser du ***https*** au lieu ***http*** par défaut comme suit : 
+
+```
+# Redirection HTTP → HTTPS
+
+<VirtualHost *:80>
+    ServerName votre-nom-de.domaine
+    Redirect permanent / https://quentin.local/
+</VirtualHost>
+
+# Configuration HTTPS
+
+<VirtualHost *:443>
+    ServerName votre-nom-de.domaine
+    DocumentRoot /var/www/glpi/public
+
+    # Certificats SSL
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/certificat-signé.crt
+    SSLCertificateKeyFile /etc/ssl/private/clé-privée-générée.key
+
+    <Directory /var/www/glpi/public>
+        Require all granted
+        AllowOverride All
+        RewriteEngine On
+        Options FollowSymlinks
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ index.php [QSA,L]
+    </Directory>
+
+    <FilesMatch \.php$>
+        SetHandler "proxy:unix:/run/php/php8.2-fpm.sock|fcgi://localhost/"
+    </FilesMatch>
+
+    ErrorLog ${APACHE_LOG_DIR}/glpi-error.log
+    CustomLog ${APACHE_LOG_DIR}/glpi-access.log combined
+</VirtualHost>
 ```
 
 ### 5. Utiliser PHP-FPM
@@ -186,7 +228,7 @@ sudo a2enconf php8.2-fpm
 sudo systemctl reload apache2
 ```
 
-- Editez le fichier ***php.ini*** et modifier le paramètre suivant : 
+- Editez le fichier ***php.ini*** et modifier les paramètres suivants : 
 ```
 session.cookie.httponly = on
 ```
