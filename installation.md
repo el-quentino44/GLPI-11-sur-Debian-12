@@ -6,20 +6,20 @@
 ## Prérequis
 L'installation s'appuie sur la stack **LAMP**, garante d'une infrastructure fiable, performante et 100 % open source :
 - Un système d'exploitation basé sur Linux (**Debian 12**)
-- Un serveur web **Apache2**
+- Un serveur web **Apache2** en mode Event avec **PHP-FPM**
 - Une base de données **MariaDB**
 - Un langage de traitement **PHP**
 
 Bien sûr, il faut prévoir une connexion à Internet pour le téléchargement de certains paquets.
 
 ## Préparation de l'environnement
-### 1. Mise à jour du système (si c'est pas déjà fait)
-Ouvrez votre terminal et lancez ces commandes pour mettre à jour le système:
+### 1. Mise à jour du système (si ce n'est pas déjà fait)
+Ouvrez votre terminal et lancez ces commandes pour mettre à jour le système :
 - Ouvrir le fichier ***sources.list***  
 ```
 nano /etc/apt/sources.list
 ```
-- Mettez **#** devant le Bookworm et mettre en dessous
+- Mettez **#** devant les lignes contenant bookworm et ajouter les lignes suivantes en dessous :
 ```
 deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware
 
@@ -28,7 +28,7 @@ deb http://security.debian.org/debian-security bookworm-security main contrib no
 deb http://deb.debian.org/debian bookworm-updates main contrib non-free non-free-firmware
 ```
 
-- Enregistrez les modifications et mettre à jour le système
+- Enregistrez les modifications et mettez à jour le système :
 ```
 sudo apt update && sudo apt upgrade -y
 ```
@@ -46,7 +46,7 @@ sudo apt-get install php8.2-fpm php-xml php-common php-json php-mysql php-mbstri
 
 ### 3. Configuration de la timezone 
 
-La ***timezone*** est à configurer en fonction du fuseau horaire (**ici, c'est paris**),
+La ***timezone*** est à configurer en fonction du fuseau horaire (**ici, c'est Europe/Paris**),
 ```
 timedatectl set-timezone "Europe/Paris"
 
@@ -90,7 +90,7 @@ wget https://github.com/glpi-project/glpi/releases/download/11.0.8/glpi-11.0.8.t
 
 sudo tar -xzvf glpi-11.0.8.tgz -C /var/www/
 ```
-- Puis donnez les droits à ***www-data*** qui est l'utilisateur système par défaut du serveur web Apache2:
+- Attribuez les droits à ***www-data*** qui est l'utilisateur système par défaut du serveur web Apache2:
 ```
 sudo chown www-data /var/www/glpi -R
 ```
@@ -115,7 +115,7 @@ sudo chown www-data /var/log/glpi
 sudo nano /var/www/glpi/inc/downstream.php
 ```
 
-- Y collez le contenu ci-après. Ce fichier va servir de pont de redirection pour charger les fichiers de configuration de GLPI.
+- Collez-y le contenu ci-après. Ce fichier va servir de pont de redirection pour charger les fichiers de configuration de GLPI.
 ```
 <?php
 define('GLPI_CONFIG_DIR', '/etc/glpi/');
@@ -201,7 +201,7 @@ sudo systemctl restart apache2
 
 <VirtualHost *:80>
     ServerName votre-nom-de.domaine
-    Redirect permanent / https://votre_nom_de.domaine/
+    Redirect permanent / https://votre-nom-de.domaine/
 </VirtualHost>
 
 # Configuration HTTPS
@@ -212,8 +212,8 @@ sudo systemctl restart apache2
 
     # Certificats SSL
     SSLEngine on
-    SSLCertificateFile /etc/ssl/certs/certificat-signé.crt
-    SSLCertificateKeyFile /etc/ssl/private/clé-privée-générée.key
+    SSLCertificateFile /etc/ssl/certs/certificat-signe.crt
+    SSLCertificateKeyFile /etc/ssl/private/cle-privee.key
 
     <Directory /var/www/glpi/public>
         Require all granted
@@ -235,7 +235,7 @@ sudo systemctl restart apache2
 
 ### 5. Utilisation de PHP-FPM
 
-- Activez ***PHP-FPM***, une version optimisée de PHP qui permet d'éxecuter du code PHP en arrière plan, séparément du serveur web
+- Activez ***PHP-FPM***, une version optimisée de PHP qui permet d'exécuter du code PHP en arrière plan, séparément du serveur web
 ```
 sudo a2enmod proxy_fcgi setenvif
 sudo a2enconf php8.2-fpm
@@ -244,20 +244,22 @@ sudo systemctl reload apache2
 
 ### 6. Configuration du fichier php.ini
 
-- Ouvrir le fichier ***php.ini***
+- Ouvrez le fichier ***php.ini***
 ```
 sudo nano /etc/php/8.2/fpm/php.ini
 ```
   
-- Y Modifier les paramètres suivants :
+- Modifiez-y les paramètres suivants :
 
     - ``` session.cookie_httponly = on ``` pour indiquer au navigateur que le cookie de session ne doit être accessible que par **HTTP/HTTPS**,
+ 
+    - ``` upload_max_filesize = 20M ``` pour définir la taille des pièces jointes pour les utilisateurs à **20Mo**
 
     - ``` session.cookie_secure = on ``` : à faire lorsqu'une première connexion au GLPI en **HTTPS** a déjà été faite et pour définir le protocole **HTTPS** comme l'unique moyen d'accès,
 
     - ``` session.cookie_samesite = Lax ```: pour bloquer le piratage venant de sites web malveillants
 
-    - ``` max_execution_time = 60 ``` : pour indiquer le temps d'éxecution maximal d'un script PHP est **60s**
+    - ``` max_execution_time = 60 ``` : pour indiquer le temps d'exécution maximal d'un script PHP est **60s**
 
     - ``` memory_limit = 256M ``` : pour indiquer que la quantité maximale de mémoire qu'un script PHP peut utiliser est **256Mo**
       
@@ -269,13 +271,13 @@ sudo nano /etc/php/8.2/fpm/php.ini
 
 ### 7. Gestion des permissions 
 
-Par défaut, l'utilisateur ***root*** est le propriétaire de tous les dossiers et fichiers de GLPI, ce qui laisse l'utilisateur web ***www-data*** sans droit d'écriture. On va donc changer de propriétaire et attribuer aux dossiers et aux fichiers systèmes des droits spécifiques. l'utilisateur ***root*** ne doit être propriétaire que du code source de GLPI.
+Par défaut, l'utilisateur ***root*** est le propriétaire de tous les dossiers et fichiers de GLPI, ce qui laisse l'utilisateur web ***www-data*** sans droit d'écriture. On va donc changer de propriétaire et attribuer aux dossiers et aux fichiers systèmes des droits spécifiques. L'utilisateur ***root*** ne doit être propriétaire que du code source de GLPI.
 ```
 chown root:root /var/www/glpi/ -R
 chown www-data:www-data /etc/glpi -R
 chown www-data:www-data /var/lib/glpi -R
 chown www-data:www-data /var/log/glpi -R
-chown www-data:www-data /var/www/html/glpi/marketplace -Rf
+chown www-data:www-data /var/www/glpi/marketplace -Rf
 find /var/www/glpi/ -type f -exec chmod 0644 {} \;
 find /var/www/glpi/ -type d -exec chmod 0755 {} \;
 find /etc/glpi -type f -exec chmod 0644 {} \;
@@ -303,5 +305,5 @@ Choisissez **Installer**, puis configurez l’accès à la base :
 - Identifiants de connexion : **glpi/glpi**
   
 
-N'oubliez pas à la fin d'attribuer des mots de passe à vos utilisateurs par défaut ou les supprimer. Aussi s'assurer que les dates sont correctes car essentiels pour un meilleur traitement des tickets.
+N'oubliez pas à la fin d'attribuer des mots de passe à vos utilisateurs par défaut ou les supprimer. Assurez vous également que les dates sont correctes car elles sont essentielless pour un bon traitement des tickets.
 
