@@ -132,7 +132,21 @@ sudo nano /etc/glpi/local_define.php
 - Y collez le contenu ci-après. Ce fichier va servir à redéfinir les dossiers d'enregistrement, de logs, de configuration, de sécurité...
 ```
 <?php
-define('GLPI_VAR_DIR', '/var/lib/glpi/files');
+define('GLPI_VAR_DIR', '/var/lib/glpi');
+define('GLPI_DOC_DIR', GLPI_VAR_DIR);
+define('GLPI_CACHE_DIR', GLPI_VAR_DIR . '/_cache');
+define('GLPI_CRON_DIR', GLPI_VAR_DIR . '/_cron');
+define('GLPI_GRAPH_DIR', GLPI_VAR_DIR . '/_graphs');
+define('GLPI_LOCAL_I18N_DIR', GLPI_VAR_DIR . '/_locales');
+define('GLPI_LOCK_DIR', GLPI_VAR_DIR . '/_lock');
+define('GLPI_PICTURE_DIR', GLPI_VAR_DIR . '/_pictures');
+define('GLPI_PLUGIN_DOC_DIR', GLPI_VAR_DIR . '/_plugins');
+define('GLPI_RSS_DIR', GLPI_VAR_DIR . '/_rss');
+define('GLPI_SESSION_DIR', GLPI_VAR_DIR . '/_sessions');
+define('GLPI_TMP_DIR', GLPI_VAR_DIR . '/_tmp');
+define('GLPI_UPLOAD_DIR', GLPI_VAR_DIR . '/_uploads');
+define('GLPI_INVENTORY_DIR', GLPI_VAR_DIR . '/_inventories');
+define('GLPI_THEMES_DIR', GLPI_VAR_DIR . '/_themes');
 define('GLPI_LOG_DIR', '/var/log/glpi');
 ```
 
@@ -180,7 +194,7 @@ sudo a2ensite votre-domaine.conf
 sudo systemctl restart apache2
 ```
 
-**N.B** : S'il existe une autorité de certification SSL, on peut générer une clée privée + une demande (CSR) pour obtenir le certificat signé. Alors on pourra paramétrer le site pour utiliser du ***https*** au lieu ***http*** par défaut comme suit : 
+**N.B** : S'il existe une autorité de certification SSL, on peut générer une clé privée + une demande (CSR) pour obtenir le certificat signé. Alors on pourra paramétrer le site pour utiliser du **HTTPS** au lieu **HTTP** par défaut comme suit : 
 
 ```
 # Redirection HTTP → HTTPS
@@ -228,10 +242,28 @@ sudo a2enconf php8.2-fpm
 sudo systemctl reload apache2
 ```
 
-- Editez le fichier ***php.ini*** et modifier les paramètres suivants : 
+- Ouvrir le fichier ***php.ini***
 ```
-session.cookie.httponly = on
+sudo nano /etc/php/8.2/apache2/php.ini
 ```
+  
+- Y Modifier les paramètres suivants :
+
+    - ``` session.cookie_httponly = on ``` pour indiquer au navigateur que le cookie de session ne doit être accessible que par **HTTP/HTTPS**,
+
+    - ``` session.cookie_secure = on ``` à faire lorsqu'une première connexion au GLPI en **HTTPS** a déjà été faite,
+
+    - ``` max_execution_time = 60 ``` : pour indiquer le temps d'éxecution maximal d'un script PHP est **60s**
+
+    - ``` memory_limit = 256M ``` : pour indiquer que la quantité maximale de mémoire qu'un script PHP peut utiliser est **256Mo**
+      
+    - ``` date.timezone = Europe/Paris ``` : pour régler le fuseau horaire de  PHP sur celui du système
+
+    - ``` max_input_vars = 5000 ``` : pour définir le nombre maximal de variables d'entrée d'un script à 5000
+
+    - ``` post_max_size = 20M ```
+
+
 
 - Puis redémarrez ces deux services :
 ```
