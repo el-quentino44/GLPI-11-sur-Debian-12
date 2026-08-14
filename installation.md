@@ -244,7 +244,7 @@ sudo systemctl reload apache2
 
 ### 6. Configuration du fichier php.ini
 
-- Ouvrez le fichier ***php.ini***
+- Ouvrez le fichier ***php.ini*** de **PHP-FM**
 ```
 sudo nano /etc/php/8.2/fpm/php.ini
 ```
@@ -288,15 +288,17 @@ find /var/log/glpi -type f -exec chmod 0644 {} \;
 find /var/log/glpi -type d -exec chmod 0755 {} \;
 ```
 
-- Puis redémarrez ces deux services :
+### 8. Vérification 
+
+- Redémarrez les services et vérifier si les statuts sont sur ***active: (running)*** :
 ```
-sudo systemctl restart php8.2-fpm.service
-sudo systemctl restart apache2
+sudo systemctl restart apache2 mariadb php8.2-fpm
+sudo systemctl status apache2 mariadb php8.2-fpm
 ```
 
 ## Accès à GLPI
 
-Ouvrez un navigateur et rendez-vous sur 127.0.1.1 si installé en local, ou sur votre domaine.
+Ouvrez un navigateur et rendez-vous sur 127.0.1.1 si installé en local, ou sur votre nom de domaine configuré.
 Choisissez **Installer**, puis configurez l’accès à la base :
 
 - Serveur SQL : **localhost**
