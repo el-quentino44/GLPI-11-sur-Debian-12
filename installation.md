@@ -19,7 +19,7 @@ Ouvrez votre terminal et lancez ces commandes pour mettre à jour le système:
 ```
 nano /etc/apt/sources.list
 ```
-- Mettez **#** devant le BOOKWARM et mettre en dessous
+- Mettez **#** devant le Bookworm et mettre en dessous
 ```
 deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware
 
@@ -171,7 +171,7 @@ sudo nano /etc/apache2/sites-available/votre-domaine.conf
 
     <Directory /var/www/glpi/public>
         Require all granted
-        AllowOverride All
+        AllowOverride None
         RewriteEngine On
         Options FollowSymlinks
         RewriteCond %{REQUEST_FILENAME} !-f
@@ -201,7 +201,7 @@ sudo systemctl restart apache2
 
 <VirtualHost *:80>
     ServerName votre-nom-de.domaine
-    Redirect permanent / https://quentin.local/
+    Redirect permanent / https://votre_nom_de.domaine/
 </VirtualHost>
 
 # Configuration HTTPS
@@ -217,7 +217,7 @@ sudo systemctl restart apache2
 
     <Directory /var/www/glpi/public>
         Require all granted
-        AllowOverride All
+        AllowOverride None
         RewriteEngine On
         Options FollowSymlinks
         RewriteCond %{REQUEST_FILENAME} !-f
@@ -246,7 +246,7 @@ sudo systemctl reload apache2
 
 - Ouvrir le fichier ***php.ini***
 ```
-sudo nano /etc/php/8.2/apache2/php.ini
+sudo nano /etc/php/8.2/fpm/php.ini
 ```
   
 - Y Modifier les paramètres suivants :
@@ -271,13 +271,13 @@ sudo nano /etc/php/8.2/apache2/php.ini
 
 Par défaut, l'utilisateur ***root*** est le propriétaire de tous les dossiers et fichiers de GLPI, ce qui laisse l'utilisateur web ***www-data*** sans droit d'écriture. On va donc changer de propriétaire et attribuer aux dossiers et aux fichiers systèmes des droits spécifiques. l'utilisateur ***root*** ne doit être propriétaire que du code source de GLPI.
 ```
-chown root:root /var/www/html/glpi/ -R
+chown root:root /var/www/glpi/ -R
 chown www-data:www-data /etc/glpi -R
 chown www-data:www-data /var/lib/glpi -R
 chown www-data:www-data /var/log/glpi -R
 chown www-data:www-data /var/www/html/glpi/marketplace -Rf
-find /var/www/html/glpi/ -type f -exec chmod 0644 {} \;
-find /var/www/html/glpi/ -type d -exec chmod 0755 {} \;
+find /var/www/glpi/ -type f -exec chmod 0644 {} \;
+find /var/www/glpi/ -type d -exec chmod 0755 {} \;
 find /etc/glpi -type f -exec chmod 0644 {} \;
 find /etc/glpi -type d -exec chmod 0755 {} \;
 find /var/lib/glpi -type f -exec chmod 0644 {} \;
