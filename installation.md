@@ -160,7 +160,7 @@ sudo a2dissite 000-default.conf
 ```
 sudo nano /etc/apache2/sites-available/votre-domaine.conf
 ```
-- Collez y le contenu suivant et ajuster au choix
+- Collez-y le contenu suivant et ajustez-le au choix
 ```
 # Configuration HTTP
 
@@ -259,7 +259,7 @@ sudo nano /etc/php/8.2/fpm/php.ini
 
     - ``` session.cookie_samesite = Lax ```: pour bloquer le piratage venant de sites web malveillants
 
-    - ``` max_execution_time = 60 ``` : pour indiquer le temps d'exécution maximal d'un script PHP est **60s**
+    - ``` max_execution_time = 60 ``` : pour indiquer que le temps d'exécution maximal d'un script PHP est **60s**
 
     - ``` memory_limit = 256M ``` : pour indiquer que la quantité maximale de mémoire qu'un script PHP peut utiliser est **256Mo**
       
@@ -305,5 +305,5 @@ Choisissez **Installer**, puis configurez l’accès à la base :
 - Identifiants de connexion : **glpi/glpi**
   
 
-N'oubliez pas à la fin d'attribuer des mots de passe à vos utilisateurs par défaut ou les supprimer. Assurez vous également que les dates sont correctes car elles sont essentielless pour un bon traitement des tickets.
+N'oubliez pas à la fin d'attribuer des mots de passe à vos utilisateurs par défaut ou les supprimer. Assurez-vous également que les dates sont correctes, car elles sont essentielles pour un bon traitement des tickets.
 
