@@ -41,7 +41,7 @@ sudo apt install apache2 php mariadb-server
 ```
 - Ensuite ajoutez les extensions PHP nécessaires : 
 ```
-sudo apt-get install php8.2-fpm php-xml php-common php-json php-mysql php-mbstring php-curl php-gd php-intl php-zip php-bz2 php-imap php-apcu php-ldap php-bcmath
+sudo apt-get install php8.2-fpm php-xml php-common php-json php-mysql php-mbstring php-curl php-gd php-intl php-zip php-bz2 php-imap php-apcu php-ldap php-bcmath php-redis
 ```
 
 ### 3. Configuration de la timezone 
@@ -261,7 +261,7 @@ sudo nano /etc/php/8.2/apache2/php.ini
 
     - ``` max_input_vars = 5000 ``` : pour définir le nombre maximal de variables d'entrée d'un script à 5000
 
-    - ``` post_max_size = 20M ```
+    - ``` post_max_size = 20M ``` : pour définir la taille maximale des données qu'un utilisateur peut envoyer en une seule fois
 
 
 
