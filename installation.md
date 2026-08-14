@@ -244,7 +244,7 @@ sudo systemctl reload apache2
 
 ### 6. Configuration du fichier php.ini
 
-- Ouvrez le fichier ***php.ini*** de **PHP-FM**
+- Ouvrez le fichier ***php.ini*** de **PHP-FPM**
 ```
 sudo nano /etc/php/8.2/fpm/php.ini
 ```
