@@ -171,7 +171,7 @@ sudo nano /etc/apache2/sites-available/votre-domaine.conf
 
     <Directory /var/www/glpi/public>
         Require all granted
-        AllowOverride None
+        AllowOverride All
         RewriteEngine On
         Options FollowSymlinks
         RewriteCond %{REQUEST_FILENAME} !-f
@@ -217,7 +217,7 @@ sudo systemctl restart apache2
 
     <Directory /var/www/glpi/public>
         Require all granted
-        AllowOverride None
+        AllowOverride All
         RewriteEngine On
         Options FollowSymlinks
         RewriteCond %{REQUEST_FILENAME} !-f
