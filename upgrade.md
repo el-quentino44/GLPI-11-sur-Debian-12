@@ -9,7 +9,14 @@
 
 ## Préparation de la mise à niveau
 
-### 1. Sauvegarde des configurations
+### 1. Activation du mode maintenance
+Pour empêcher l'utilisation de GLPI pendant la procédure comme par exemple l'émission de tickets..., il est fortement conseillé de mettre le serveur en mode maintenance :
+```
+php /var/www/glpi/bin/console maintenance:enable
+```
+À la fin de la mise à niveau, il faudra taper la même commande mais en remplaçant le ***enable*** par ***disable***
+
+### 2. Sauvegarde des configurations
 Générez les sauvegardes des base de données et fichiers (configuration, données et plugins)
 
 ```
@@ -20,19 +27,21 @@ mysqldump -u root -p --single-transaction glpi > /backup/glpi_pre_migration.sql
 tar -czf /backup/glpi_files_pre_migration.tar.gz /var/www/glpi /etc/glpi /var/lib/glpi
 ```
 
-### 2. Désactiver les plugins incompatibles 
+### 3. Désactiver les plugins incompatibles 
 Dans GLPI 10, allez dans ***Configuration*** > ***Plugins*** et désactivez tous ceux sans version pour la 11. Supprimez les répertoires des incompatibles. Cette étape n'est pas optionnelle : c'est la cause n°1 d'échec à la commande de mise à jour.
 
-### 3. Mettre à jour les fichiers de GLPI
+## Mise à niveau de GLPI
+
+### 1. Mettre à jour les fichiers de GLPI
 - Téléchargez toujours la dernière version stable de la ligne 11.x, pas forcément la 11.0.0 :
 ```
 cd /tmp
-wget https://github.com/glpi-project/glpi/releases/download/11.0.0/glpi-11.0.0.tgz
-tar -xzf glpi-11.0.0.tgz
+wget https://github.com/glpi-project/glpi/releases/download/11.0.0/glpi-11.0.x.tgz
+tar -xzf glpi-11.0.x.tgz
 ```
 - Remplacez les fichiers en préservant les configuration, données et plugins :
 ```
-rsync -av --delete /tmp/glpi/ /var/www/glpi/ --exclude plugins/ --exclude marketplace/
+rsync -av --delete /tmp/glpi/ /var/www/glpi/ --exclude plugins/ --exclude marketplace/ --exclude inc/downstream.php
 chown -R www-data:www-data /var/www/glpi
 ```
 
