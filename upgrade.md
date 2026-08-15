@@ -10,7 +10,7 @@
 ## Préparation de la mise à niveau
 
 ### 1. Activation du mode maintenance
-Pour empêcher l'utilisation de GLPI pendant la procédure comme par exemple l'émission de tickets..., il est fortement conseillé de mettre le serveur en mode maintenance :
+Pour empêcher l'utilisation de GLPI pendant la procédure (création de tickets, inevntaires, synchronisations) il est fortement conseillé de mettre le serveur en mode maintenance :
 ```
 php /var/www/glpi/bin/console maintenance:enable
 ```
@@ -21,7 +21,8 @@ Générez les sauvegardes des bases de données et fichiers (configuration, donn
 
 ```
 # Base de données
-mysqldump -u root -p --single-transaction glpi > /backup/glpi_pre_migration.sql
+mkdir -p /backup
+mysqldump -u root -p --single-transaction nom_de_la_bd > /backup/glpi_pre_migration.sql
 
 # Fichiers (configuration, données et plugins)
 tar -czf /backup/glpi_files_pre_migration.tar.gz /var/www/glpi /etc/glpi /var/lib/glpi
@@ -40,26 +41,27 @@ cd /tmp
 wget https://github.com/glpi-project/glpi/releases/download/11.0.0/glpi-11.0.0.tgz
 tar -xzf glpi-11.0.0.tgz
 ```
-- Remplacez les fichiers en préservant les configuration, données et plugins :
+- Remplacez les fichiers en préservant les configurations, données et plugins :
 ```
 rsync -av --delete /tmp/glpi/ /var/www/glpi/ --exclude plugins/ --exclude marketplace/ --exclude inc/downstream.php
 chown -R root:root /var/www/glpi
+chown -R www-data:www-data /var/www/glpi/marketplace
 ```
 
 ### 2. Lancement de la migration de la base 
 ```
 php /var/www/glpi/bin/console db:update --no-interaction
 ```
-Cette commande applique toutes les migrations de schéma. Suivez toute la sortie car toute erreur doit être résolue avant de continuer et jamais ignorée.
+Cette commande applique toutes les migrations de schéma. Suivez attentivement les messages retournés car toute erreur doit être résolue avant de continuer et jamais ignorée.
 
-### 5. Vider le cache et les sessions
+### 3. Vider le cache et les sessions
 Vider le cache de GLPI permet d'***éviter les erreurs d'affichage et de bugs, et de forcer la prise en compte du nouveau code*** : 
 ```
 php /var/www/glpi/bin/console cache:clear
 rm -rf /var/lib/glpi/_sessions/*
 ```
 
-### 6. Vérification post-migration
+### 4. Vérification post-migration
 - La connexion fonctionne et la version sous Configuration > Général affiche 11.x.
 - Tickets, actifs et utilisateurs sont présents avec les totaux attendus.
 - L'ouverture d'un nouveau ticket fonctionne de bout en bout.
