@@ -17,7 +17,7 @@ php /var/www/glpi/bin/console maintenance:enable
 À la fin de la mise à niveau, il faudra taper la même commande mais en remplaçant le ***enable*** par ***disable***
 
 ### 2. Sauvegarde des configurations
-Générez les sauvegardes des base de données et fichiers (configuration, données et plugins)
+Générez les sauvegardes des bases de données et fichiers (configuration, données et plugins)
 
 ```
 # Base de données
@@ -35,17 +35,18 @@ Dans GLPI 10, allez dans ***Configuration*** > ***Plugins*** et désactivez tous
 ### 1. Mettre à jour les fichiers de GLPI
 - Téléchargez toujours la dernière version stable de la ligne 11.x, pas forcément la 11.0.0 :
 ```
+# Exemple pour la version 11.0.0
 cd /tmp
-wget https://github.com/glpi-project/glpi/releases/download/11.0.0/glpi-11.0.x.tgz
-tar -xzf glpi-11.0.x.tgz
+wget https://github.com/glpi-project/glpi/releases/download/11.0.0/glpi-11.0.0.tgz
+tar -xzf glpi-11.0.0.tgz
 ```
 - Remplacez les fichiers en préservant les configuration, données et plugins :
 ```
 rsync -av --delete /tmp/glpi/ /var/www/glpi/ --exclude plugins/ --exclude marketplace/ --exclude inc/downstream.php
-chown -R www-data:www-data /var/www/glpi
+chown -R root:root /var/www/glpi
 ```
 
-### 4. Lancer la migration de la base 
+### 2. Lancement de la migration de la base 
 ```
 php /var/www/glpi/bin/console db:update --no-interaction
 ```
